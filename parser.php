@@ -70,6 +70,3 @@ function parser($url){
 		return "\nNão encontrado";
 	}
 }
-
-
-// echo getResult('megasena', 'Mega sena');
