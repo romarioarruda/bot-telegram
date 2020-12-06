@@ -1,6 +1,4 @@
 <?php
-include_once('simple_html_dom.php');
-
 define('BASE_URL',"http://g1.globo.com/loterias/");
 define('URL_MEGA', BASE_URL.'megasena.html');
 define('URL_QUINA', BASE_URL.'quina.html');
@@ -9,7 +7,7 @@ define('URL_LOTOCACIL', BASE_URL.'lotofacil.html');
 
 function getResult($lottery, $title){
 
-	$out = "Resultado - ".$title;
+	$out = "Resultado: ".$title;
 
 	if($lottery=="megasena"){
 		$out .= parser(URL_MEGA);
@@ -25,36 +23,33 @@ function getResult($lottery, $title){
 }
 
 function parser($url){
-	$html = file_get_html($url);
+	$html = file_get_contents($url);
 	if (!empty($html)) {
-		$concurso_header = explode(" - ", $html->find('span.content-lottery__info',0)->plaintext);
-		$concurso = $concurso_header[0];
-		$data = $concurso_header[1];
-		if(!isset($html->find('div[class="content-lottery__ammount desativado"]',0)->plaintext)){
-			$acumulado = $html->find('div[class="content-lottery__ammount"]',0)->plaintext;
-		}else{
-			$acumulado = "Não Acumulou!";
+		preg_match('#<span class="content-lottery__info">(.*?)\s*-\s*(\d+/\d+/\d+)\s*</span>#is', $html, $concurso_header);
+		
+		$concurso = $concurso_header[1];
+		$data     = $concurso_header[2];
+
+		preg_match('#<div class="content-lottery__ammount">(.*?)</div>#is', $html, $concurso_acumulado);
+
+		$acumulado = "Não Acumulou!";
+		if($concurso_acumulado[1]) {
+			$acumulado = trim($concurso_acumulado[1]);
 		}
-		$numeros = "";
-		foreach ($html->find('div[class="content-lottery__result"]') as $numero) {
-			$numeros .= $numero->plaintext . "  ";
-		}
-		$premios = "";
-		foreach ($html->find('div[class="content-lottery__awards"]')[0]->find('tr') as $premio) {
-			$premios .= "\n" . $premio->find('td.col-acertos',0)->plaintext." - " . $premio->find('td.col-ganhadores',0)->plaintext;
-			if (strpos($premio->find('td.col-premio',0)->plaintext,"-")==false) {
-				$premios .= " ganhadores "." - ".$premio->find('td.col-premio',0)->plaintext;
-			}else{
-			    $premios .= $premio->find('td.col-premio',0)->plaintext;
-			}
-		}
-		return "\n---------------".
-		"\n".$concurso .
-		"\nDATA: " . $data .
-		"\nNÚMEROS:  " . $numeros .
-		"\n".$acumulado.
-		"\n---------------".
-		"\nPREMIAÇÕES" . $premios;
+
+		preg_match_all('#content-lottery__result--megasena">(.*?)</div>#is', $html, $concurso_numeros);
+		
+		$numeros_sorteados = !empty($concurso_numeros[1]) ? implode($concurso_numeros[1]) : 'Não consegui identificar os números.';
+		
+		preg_match('#<div class="columns tabela_premiacao">(.*?)</table>#is', $html, $concurso_premios);
+
+		return "\n<br>---------------".
+		"\n<br>".$concurso .
+		"\n<br>DATA: " . $data .
+		"\n<br>NÚMEROS:  " . $numeros_sorteados .
+		"\n<br>".$acumulado.
+		"\n<br>---------------".
+		"\n" . $concurso_premios[1];
 	}else{
 		return "\nNão encontrado";
 	}
