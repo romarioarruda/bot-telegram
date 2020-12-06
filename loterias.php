@@ -11,26 +11,28 @@ function processMessage($message) {
   $message_id = $message['message_id'];
   $chat_id = $message['chat']['id'];
   if (isset($message['text'])) {
+
+    $parser = new Parser();
     
     $text = $message['text'];//texto recebido na mensagem
 
     if (strpos($text, "/start") === 0) {
 		//envia a mensagem ao usuário
-      sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => 'Olá, '. $message['from']['first_name'].
+        sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => 'Olá, '. $message['from']['first_name'].
         '! Eu sou um bot que informa o resultado do último sorteio da loteria brasileira. Será que você ganhou dessa vez? Para começar, escolha qual sorteio você deseja ver o resultado',
         'reply_markup' => array(
-        'keyboard' => array(array('Mega-Sena', 'Quina'),array('Lotofácil','Lotomania')),
+        'keyboard' => array(array('Mega-Sena', 'Quina'),array('Lotofácil', 'Lotomania')),
         'one_time_keyboard' => true)));
     } else if ($text === "Mega-Sena") {
-      sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('megasena', $text)));
+        sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => $parser->getResult(New ParseMegaSena, $text)));
     } else if ($text === "Quina") {
-      sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('quina', $text)));
+        sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => $parser->getResult(New ParseQuina, $text)));
     } else if ($text === "Lotomania") {
-      sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('lotomania', $text)));
+        sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => $parser->getResult(New ParseLotoMania, $text)));
     } else if ($text === "Lotofácil") {
-      sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('lotofacil', $text)));
+        sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => $parser->getResult(new ParseLotoFacil, $text)));
     } else if ($text === "g1") {
-      sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => 'Olá, '. $message['from']['first_name'].
+        sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => 'Olá, '. $message['from']['first_name'].
 		'! Escolha um dos jogos abaixo para ver o resultado diretamente no site do G1.', 
         'reply_markup' => 
         array('inline_keyboard' => 
@@ -47,7 +49,7 @@ function processMessage($message) {
             )
         )));
     } else {
-      sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => 'Desculpe, mas não entendi essa mensagem. :('));
+        sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => 'Desculpe, mas não entendi essa mensagem. :('));
     }
   } else {
     sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => 'Desculpe, mas só compreendo mensagens em texto'));
