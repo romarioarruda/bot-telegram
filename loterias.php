@@ -57,17 +57,17 @@ function processMessage($message) {
 }
 
 function sendMessage($method, $parameters) {
-  $options = array(
-  'http' => array(
-    'method'  => 'POST',
-    'content' => json_encode($parameters),
-    'header'=>  "Content-Type: application/json\r\n" .
-                "Accept: application/json\r\n"
-    )
-);
+    $options = array(
+        'http' => array(
+            'method'  => 'POST',
+            'content' => json_encode($parameters),
+            'header'=>  "Content-Type: application/json\r\n" .
+                        "Accept: application/json\r\n"
+        )
+    );
 
-$context  = stream_context_create( $options );
-    file_get_contents(API_URL.$method, false, $context );
+    $context = stream_context_create($options);
+    file_get_contents(API_URL.$method, false, $context);
 }
 
 $update_response = file_get_contents("php://input");
