@@ -16,10 +16,10 @@ Para fazer o clone deste projeto, execute em seu terminal o comando:
 ### Sua versão do bot
 Caso você queira desenvolver sua própria versão deste bot, será necessário seguir os seguintes passos:
 
-1 - Criar uma conta no telegram e acessar através do app mobile ou web.
-2 - Adicionar aos seu contatos o `@BotFather` que é o responsável por criar novos bots na plataforma.
-3 - envie o comando `/start` no campo de mensagem. Será o primeiro passo para a crição do seu bot.
-4 - envie o comando `/newbot` no campo de mensagem. Será o comando para criar um novo bot.
+* 1 - Criar uma conta no telegram e acessar através do app mobile ou web.
+* 2 - Adicionar aos seu contatos o `@BotFather` que é o responsável por criar novos bots na plataforma.
+* 3 - envie o comando `/start` no campo de mensagem. Será o primeiro passo para a crição do seu bot.
+* 4 - envie o comando `/newbot` no campo de mensagem. Será o comando para criar um novo bot.
 
 Pra saber mais, a instrução `/help` deve ajudar.
 
