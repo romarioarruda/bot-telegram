@@ -27,30 +27,49 @@ function parser($url){
 	if (!empty($html)) {
 		preg_match('#<span class="content-lottery__info">(.*?)\s*-\s*(\d+/\d+/\d+)\s*</span>#is', $html, $concurso_header);
 		
-		$concurso = $concurso_header[1];
+		$concurso = str_replace('CONCURSO', 'Concurso:', $concurso_header[1]);
 		$data     = $concurso_header[2];
 
 		preg_match('#<div class="content-lottery__ammount">(.*?)</div>#is', $html, $concurso_acumulado);
 
 		$acumulado = "Não Acumulou!";
 		if($concurso_acumulado[1]) {
-			$acumulado = trim($concurso_acumulado[1]);
+			$acumulado = str_replace('ACUMULADO:', '', trim($concurso_acumulado[1]));
 		}
 
 		preg_match_all('#content-lottery__result--megasena">(.*?)</div>#is', $html, $concurso_numeros);
 		
 		$numeros_sorteados = !empty($concurso_numeros[1]) ? implode($concurso_numeros[1]) : 'Não consegui identificar os números.';
 		
-		preg_match('#<div class="columns tabela_premiacao">(.*?)</table>#is', $html, $concurso_premios);
+		preg_match('#lottery__table-content">(.*?)</table>#is', $html, $concurso_premios);
+		
+		$premios = '';
+
+		if(!empty($concurso_premios[1])) {
+			preg_match_all('#<td class="col-acertos">(.*?)</td>[^>]*?>(.*?)</td>[^>]*?>(.*?)</td>#is', $concurso_premios[1], $resultado);
+
+			foreach($resultado[1] as $key => $valor) {
+				if(trim($resultado[2][$key]) == 'Acumulou!'){
+					$premios .= trim($valor).': '.$resultado[2][$key]."\n";
+				} else {
+					$premios .= trim($valor).': '. $resultado[2][$key] . ' pessoas ganharam ' . $resultado[3][$key] ."\n";
+				}
+			}
+		}
 
 		return "\n<br>---------------".
 		"\n<br>".$concurso .
-		"\n<br>DATA: " . $data .
-		"\n<br>NÚMEROS:  " . $numeros_sorteados .
-		"\n<br>".$acumulado.
+		"\n<br>Data: " . $data .
+		"\n<br>Números:  " . $numeros_sorteados .
+		"\n<br>Acumulado: ".$acumulado.
 		"\n<br>---------------".
-		"\n" . $concurso_premios[1];
+		"\n<br>Premiação:".
+		"\n<br>---------------\n<br>".$premios.
+		"---------------";
 	}else{
 		return "\nNão encontrado";
 	}
 }
+
+
+// echo getResult('megasena', 'Mega sena');
