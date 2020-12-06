@@ -57,14 +57,14 @@ function parser($url){
 			}
 		}
 
-		return "\n<br>---------------".
-		"\n<br>".$concurso .
-		"\n<br>Data: " . $data .
-		"\n<br>Números:  " . $numeros_sorteados .
-		"\n<br>Acumulado: ".$acumulado.
-		"\n<br>---------------".
-		"\n<br>Premiação:".
-		"\n<br>---------------\n<br>".$premios.
+		return "\n---------------".
+		"\n".$concurso .
+		"\nData: " . $data .
+		"\nNúmeros:  " . $numeros_sorteados .
+		"\nAcumulado: ".$acumulado.
+		"\n---------------".
+		"\nPremiação:".
+		"\n---------------\n".$premios.
 		"---------------";
 	}else{
 		return "\nNão encontrado";
