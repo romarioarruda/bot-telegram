@@ -7,22 +7,22 @@ define('BOT_TOKEN', $env['token']);
 define('API_URL', 'https://api.telegram.org/bot'.BOT_TOKEN.'/');
 
 function processMessage($message) {
-  // processa a mensagem recebida
-  $message_id = $message['message_id'];
   $chat_id = $message['chat']['id'];
-  if (isset($message['text'])) {
 
+  if (isset($message['text'])) {
     $parser = new Parser();
     
-    $text = $message['text'];//texto recebido na mensagem
+    $text = $message['text'];
 
     if (strpos($text, "/start") === 0) {
-		//envia a mensagem ao usuário
-        sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => 'Olá, '. $message['from']['first_name'].
-        '! Eu sou um bot que informa o resultado do último sorteio da loteria brasileira. Será que você ganhou dessa vez? Para começar, escolha qual sorteio você deseja ver o resultado',
-        'reply_markup' => array(
-        'keyboard' => array(array('Mega-Sena', 'Quina'),array('Lotofácil', 'Lotomania')),
-        'one_time_keyboard' => true)));
+        sendMessage(
+            "sendMessage", array('chat_id' => $chat_id, "text" => 'Olá, '. $message['from']['first_name'].
+        '! Eu sou um bot que informa o resultado do último sorteio da loteria caixa. Será que você ganhou dessa vez? Para começar, escolha qual sorteio você deseja ver o resultado',
+        'reply_markup' =>
+            array('keyboard' => 
+                array(array('Mega-Sena', 'Quina'), array('Lotofácil', 'Lotomania')),
+        'one_time_keyboard' => true))
+        );
     } else if ($text === "Mega-Sena") {
         sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => $parser->getResult(New ParseMegaSena, $text)));
     } else if ($text === "Quina") {
