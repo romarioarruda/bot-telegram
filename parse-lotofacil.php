@@ -25,7 +25,7 @@ class ParseLotoFacil implements Bot
                 $acumulado = str_replace('ACUMULADO:', '', trim($concurso_acumulado[1]));
             }
     
-            preg_match_all('#content-lottery__result--megasena">(.*?)</div>#is', $html, $concurso_numeros);
+            preg_match_all('#content-lottery__result--lotofacil">(.*?)</div>#is', $html, $concurso_numeros);
             
             $numeros_sorteados = !empty($concurso_numeros[1]) ? implode($concurso_numeros[1]) : 'Não consegui identificar os números.';
             
