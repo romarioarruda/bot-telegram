@@ -7,31 +7,31 @@ define('BOT_TOKEN', $env['token']);
 define('API_URL', 'https://api.telegram.org/bot'.BOT_TOKEN.'/');
 
 function processMessage($message) {
-  $chat_id = $message['chat']['id'];
 
-  if (isset($message['text'])) {
-    $parser = new Parser();
-    
-    $text = $message['text'];
+    if (isset($message['text'])) {
+        $parser = new Parser();
+        
+        $text = $message['text'];
 
-    if (strpos($text, "/start") === 0) {
-        onTimeKeyBoard($chat_id, $message['from']['first_name']);
-    } else if ($text === "Mega-Sena") {
-        sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => $parser->getResult(New ParseMegaSena, $text)));
-    } else if ($text === "Quina") {
-        sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => $parser->getResult(New ParseQuina, $text)));
-    } else if ($text === "Lotomania") {
-        sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => $parser->getResult(New ParseLotoMania, $text)));
-    } else if ($text === "Lotofácil") {
-        sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => $parser->getResult(new ParseLotoFacil, $text)));
-    } else if ($text === "g1") {
-        inlineKeyboardG1($chat_id, $message['from']['first_name']);
+        if (strpos($text, "/start") === 0) {
+            onTimeKeyBoard($message['chat']['id'], $message['from']['first_name']);
+        } else if ($text === "Mega-Sena") {
+            sendMessage("sendMessage", array('chat_id' => $message['chat']['id'], "text" => $parser->getResult(New ParseMegaSena, $text)));
+        } else if ($text === "Quina") {
+            sendMessage("sendMessage", array('chat_id' => $message['chat']['id'], "text" => $parser->getResult(New ParseQuina, $text)));
+        } else if ($text === "Lotomania") {
+            sendMessage("sendMessage", array('chat_id' => $message['chat']['id'], "text" => $parser->getResult(New ParseLotoMania, $text)));
+        } else if ($text === "Lotofácil") {
+            sendMessage("sendMessage", array('chat_id' => $message['chat']['id'], "text" => $parser->getResult(new ParseLotoFacil, $text)));
+        } else if ($text === "g1") {
+            inlineKeyboardG1($message['chat']['id'], $message['from']['first_name']);
+        } else {
+            sendMessage("sendMessage", array('chat_id' => $message['chat']['id'], "text" => 'Desculpe, mas não entendi essa mensagem. :('));
+        }
     } else {
-        sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => 'Desculpe, mas não entendi essa mensagem. :('));
+        sendMessage("sendMessage", array('chat_id' => $message['chat']['id'], "text" => 'Desculpe, mas só compreendo mensagens em texto'));
     }
-  } else {
-    sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => 'Desculpe, mas só compreendo mensagens em texto'));
-  }
+
 }
 
 function sendMessage($method, $parameters) {
@@ -68,13 +68,13 @@ function inlineKeyboardG1($chat_id, $from) {
         array('inline_keyboard' => 
             array(
                 array(
-                    array('text'=>'Mega-Sena','url'=>'http://g1.globo.com/loterias/megasena.html'), //botão 1
-                    array('text'=>'Quina','url'=>'http://g1.globo.com/loterias/quina.html')//botão 2
+                    array('text'=>'Mega-Sena','url'=>'https://g1.globo.com/loterias/megasena.html'), //botão 1
+                    array('text'=>'Quina','url'=>'https://g1.globo.com/loterias/quina.html')//botão 2
                 ),
 
                 array(
-                    array('text'=>'Lotofácil','url'=>'http://g1.globo.com/loterias/lotofacil.html'), //botão 3
-                    array('text'=>'Lotomania','url'=>'http://g1.globo.com/loterias/lotomania.html')//botão 4
+                    array('text'=>'Lotofácil','url'=>'https://g1.globo.com/loterias/lotofacil.html'), //botão 3
+                    array('text'=>'Lotomania','url'=>'https://g1.globo.com/loterias/lotomania.html')//botão 4
                 )
             )
         ))
